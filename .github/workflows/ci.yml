@@ -1,0 +1,45 @@
+name: CI-Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: myEnvironment
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Chromium
+        run: playwright install --with-deps chromium
+
+      - name: Run tests
+        env:
+          TEST_EMAIL_GITHUB: ${{ vars.TEST_EMAIL_GITHUB }}
+          TEST_PASSWORD_GITHUB: ${{ secrets.TEST_PASSWORD_GITHUB }}
+        run: pytest -sv
+
+      - name: Upload report and failure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: |
+            reports/
+            test-results/
+          if-no-files-found: ignore
