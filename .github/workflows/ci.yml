@@ -30,8 +30,8 @@ jobs:
 
       - name: Run tests
         env:
-          TEST_EMAIL_GITHUB: ${{ vars.TEST_USERNAME }}
-          TEST_PASSWORD_GITHUB: ${{ secrets.TEST_PASSWORD }}
+          TEST_EMAIL_GITHUB: ${{ vars.TEST_EMAIL_GITHUB }}
+          TEST_PASSWORD_GITHUB: ${{ secrets.TEST_PASSWORD_GITHUB }}
         run: pytest -sv
 
       - name: Upload report and failure artifacts
