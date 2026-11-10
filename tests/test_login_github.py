@@ -1,7 +1,10 @@
 from pages.login_github import LoginPage
 from playwright.sync_api import Page, expect
 from utilities.config import TEST_EMAIL, TEST_PASSWORD
+import pytest
 
+
+@pytest.mark.playwright
 def test_sign_in_to_gmail(page: Page):
     signInPage = LoginPage(page)
     signInPage.open()
