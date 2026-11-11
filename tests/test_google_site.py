@@ -33,8 +33,8 @@ def test_google_title(driver):
 @pytest.mark.selenium
 def test_google_search(driver):
     driver.get("https://www.google.com")
-    # searchField = driver.find_element(By.NAME, "q")
-    searchField = driver.find_element(By.CSS_SELECTOR, '[aria-label="חיפוש"]')
+    searchField = driver.find_element(By.NAME, "q")
+    # searchField = driver.find_element(By.CSS_SELECTOR, '[aria-label="חיפוש"]')
     searchField.send_keys("SOXL stock price")
     searchField.clear()
     print(f"Attribute: {searchField.get_attribute("aria-label")}")
