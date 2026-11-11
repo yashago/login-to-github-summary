@@ -32,6 +32,7 @@ jobs:
         env:
           TEST_JACOB_EMAIL: ${{ vars.TEST_EMAIL_GITHUB }}
           TEST_JACOB_PASSWORD: ${{ secrets.TEST_PASSWORD_GITHUB }}
+          CI: ${{ vars.CI }}
         run: pytest -sv
 
       - name: Upload report and failure artifacts
