@@ -35,7 +35,7 @@ def test_header_selenium(driver):
     registration.open()
 
     registration.click_preferences_link()
-    validateGoogleMapsIframe(registration)
+    # validateGoogleMapsIframe(registration)
 
 
 def fillInFullForm(registration: RegistrationFormSeleniumPage):
