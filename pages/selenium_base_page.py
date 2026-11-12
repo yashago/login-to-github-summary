@@ -31,7 +31,7 @@ class SeleniumBasePage:
         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
         return element
 
-    def fill(self, locator: Locator, value: str) -> None:
+    def typeText(self, locator: Locator, value: str) -> None:
         """Selenium equivalent of Playwright's fill(): clear, then type."""
         element = self.find_visible(locator)
         element.clear()

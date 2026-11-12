@@ -46,22 +46,22 @@ class RegistrationFormSeleniumPage(SeleniumBasePage):
 
     # --- Personal details ---
     def fill_personal_details(self, first: str, last: str, email: str) -> None:
-        self.fill(self.FIRST_NAME, first)
-        self.fill(self.LAST_NAME, last)
-        self.fill(self.EMAIL, email)
-        self.fill(self.CONFIRM_EMAIL, email)
+        self.typeText(self.FIRST_NAME, first)
+        self.typeText(self.LAST_NAME, last)
+        self.typeText(self.EMAIL, email)
+        self.typeText(self.CONFIRM_EMAIL, email)
 
     def emailsAreIdentical(self) -> bool:
         return self.input_value(self.EMAIL) == self.input_value(self.CONFIRM_EMAIL)
 
     def fill_password(self, password: str) -> None:
-        self.fill(self.PASSWORD, password)
+        self.typeText(self.PASSWORD, password)
 
     def fill_phone_number(self, phone: str) -> None:
-        self.fill(self.PHONE, phone)
+        self.typeText(self.PHONE, phone)
 
     def fill_city(self, city: str) -> None:
-        self.fill(self.CITY, city)
+        self.typeText(self.CITY, city)
 
     def fill_date_of_birth(self, iso_date: str) -> None:
         """Set an <input type="date"> value (YYYY-MM-DD).
