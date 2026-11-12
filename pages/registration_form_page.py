@@ -8,7 +8,6 @@ class RegistrationFormPage(BasePage):
 
     def __init__(self, page: Page):
         super().__init__(page)
-        self.first_name = page.get_by_role("textbox", name="First name")
         self.last_name = page.get_by_role("textbox", name="Last name")
         self.email = page.get_by_role("textbox", name=re.compile("^"+REGISTRATION_FORM.get("formEmail")))
         self.confirmEmail = page.get_by_role("textbox", name="Confirm email")
@@ -21,3 +20,7 @@ class RegistrationFormPage(BasePage):
 
     def emailsAreIdentical(self):
         return self.email.input_value() == self.confirmEmail.input_value()
+    
+    @property
+    def first_name(self):
+        return self.page.get_by_role("textbox", name="First name")
