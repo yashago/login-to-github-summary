@@ -6,7 +6,7 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
-from pages.registration_form_selenium_page import RegistrationFormSeleniumPage
+from pages.registration_form_page import RegistrationFormPage
 from utilities.consts import REGISTRATION_FORM
 
 SCREENSHOTS_DIR = "screenshots"
@@ -14,16 +14,16 @@ SCREENSHOTS_DIR = "screenshots"
 
 @pytest.mark.selenium
 def test_registration_form_selenium(driver, request):
-    registration = RegistrationFormSeleniumPage(driver)
+    registration = RegistrationFormPage(driver)
     registration.open()
 
     fillInFullForm(registration)
 
-    os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
-    test_name = request.node.name
-    date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    # Selenium's Chrome driver only captures the viewport (no full_page option like Playwright).
-    driver.save_screenshot(f"{SCREENSHOTS_DIR}/{test_name}_{date}.png")
+    # os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
+    # test_name = request.node.name
+    # date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # # Selenium's Chrome driver only captures the viewport (no full_page option like Playwright).
+    # driver.save_screenshot(f"{SCREENSHOTS_DIR}/{test_name}_{date}.png")
 
     validateResetForm(registration)
     fillInFullForm(registration)
@@ -31,14 +31,14 @@ def test_registration_form_selenium(driver, request):
 
 @pytest.mark.selenium
 def test_header_selenium(driver):
-    registration = RegistrationFormSeleniumPage(driver)
+    registration = RegistrationFormPage(driver)
     registration.open()
 
     registration.click_preferences_link()
     validateGoogleMapsIframe(registration)
 
 
-def fillInFullForm(registration: RegistrationFormSeleniumPage):
+def fillInFullForm(registration: RegistrationFormPage):
     registration.fill_personal_details("first", "last", "email@test.com")
     assert registration.emailsAreIdentical()
 
@@ -58,9 +58,9 @@ def fillInFullForm(registration: RegistrationFormSeleniumPage):
     assert registration.is_interest_selected(REGISTRATION_FORM["formInterest"])
 
 
-def validateResetForm(registration: RegistrationFormSeleniumPage):
+def validateResetForm(registration: RegistrationFormPage):
     os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
-    registration.reset_button.screenshot(f"{SCREENSHOTS_DIR}/reset_button_selenium.png")
+    registration.screenshot_reset_button(f"{SCREENSHOTS_DIR}/reset_button_selenium.png")
 
     print("Clicking on the reset button")
     registration.reset_form(REGISTRATION_FORM["resetConfirmationText"])
@@ -71,19 +71,21 @@ def validateResetForm(registration: RegistrationFormSeleniumPage):
     assert not registration.is_gender_selected(REGISTRATION_FORM["formGender"])
 
 
-def validateGoogleMapsIframe(registration: RegistrationFormSeleniumPage):
+def validateGoogleMapsIframe(registration: RegistrationFormPage):
     driver = registration.driver
     registration.click_google_map_link()
 
-    mapIframe = registration.scroll_into_view(registration.map_iframe)
-    assert re.search(r"\?q=Tel\+Aviv,\+Israel", mapIframe.get_attribute("src") or "")
+    # mapIframe = registration.scroll_into_view(registration.map_iframe)
+    mapIframe = registration.element(registration.GOOGLE_MAP_IFRAME)
+    assert re.search(r"\?q=Tel\+Aviv,\+Israel", registration.map_iframe_src())
 
     # Selenium must explicitly switch context into the iframe
-    registration.wait.until(EC.frame_to_be_available_and_switch_to_it(mapIframe))
+    # registration.wait.until(EC.frame_to_be_available_and_switch_to_it(mapIframe))
+    registration.driver.switch_to.frame(mapIframe)
     try:
         # The link lives inside the shadow DOM of <embed-place-card-element>. Unlike Playwright,
         # Selenium locators don't pierce shadow roots, and shadow roots only accept CSS selectors.
-        placeCard = registration.find((By.CSS_SELECTOR, "embed-place-card-element"))
+        placeCard = registration.element((By.CSS_SELECTOR, "embed-place-card-element"))
         navButton = registration.wait.until(
             lambda d: placeCard.shadow_root.find_element(By.CSS_SELECTOR, "a[aria-label^='Open in Maps']")
         )

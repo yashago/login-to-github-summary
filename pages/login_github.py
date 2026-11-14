@@ -1,11 +1,11 @@
 from playwright.sync_api import Locator, Page
 
-from pages.base_page import BasePage
+from pages.base_page_playwright import PlaywrightBasePage
 from utilities import config
 import re
 
 
-class LoginPage(BasePage):
+class LoginPage(PlaywrightBasePage):
     PATH = config.GITHUB_URL
 
     def __init__(self, page: Page):
